@@ -1,0 +1,13 @@
+---
+  ##Generate Config
+  - name: Get device facts
+    napalm_get_facts:
+      hostname: "{{ inventory_hostname }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      dev_os: "{{ dev_os }}"
+    register: device_fact
+  - name: Template Configuration
+    template: src={{item.src}} dest={{item.dest}}
+    with_items:
+      - { src: '../templates/full.j2' , dest: '/root/netansible/napalmconfig/{{ inventory_hostname }}.full' }

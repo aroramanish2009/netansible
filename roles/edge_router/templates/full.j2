@@ -1,0 +1,48 @@
+hostname {{ inventory_hostname }}
+banner motd 'ACCESS RESTRICTED TO AUTHORIZED PERSONNEL ONLY. UNAUTHORIZED ACCESS WILL BE PROSECUTED TO THE FULLEST EXTENT OF THE LAW'
+banner login '############################### Under Configuration Management System ###############################################'
+logging console warning
+logging buffered 5000000
+username ansible
+ group netadmin
+ group root-system
+ secret 5 $1$gkxn$9Czgn8mwrrvYnAhjPao7f1
+!
+cdp
+interface Loopback0
+ ipv4 address 2.2.2.2 255.255.255.255
+!
+interface MgmtEth0/0/CPU0/0
+ description {{ mgmt_description }}
+ ipv4 address 192.168.250.10 255.255.255.0
+!
+interface GigabitEthernet0/0/0/0
+ cdp
+ ipv4 address 10.10.10.2 255.255.255.252
+!
+interface GigabitEthernet0/0/0/1
+ shutdown
+!
+interface GigabitEthernet0/0/0/2
+ shutdown
+!
+router ospf 100
+ router-id 2.2.2.2
+ auto-cost reference-bandwidth 40000
+ area 0
+  loopback stub-network enable
+  interface Loopback0
+  interface GigabitEthernet0/0/0/0
+ !
+xml agent tty
+ iteration off
+!
+netconf agent tty
+netconf-yang agent
+ ssh
+!
+ssh server v2
+ssh server vrf default
+ssh server netconf vrf default
+ssh server session-limit 10
+end

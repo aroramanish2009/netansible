@@ -1,0 +1,8 @@
+- name: "Collect and display facts"
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Retrieve IOS-XR version
+      cisco.iosxr.iosxr_command:
+        commands: show version

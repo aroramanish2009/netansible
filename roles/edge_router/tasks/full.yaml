@@ -1,0 +1,11 @@
+---
+  - name: Full IOS-XR Configuration
+    napalm_install_config:
+      hostname: "{{ inventory_hostname }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      dev_os: "{{ dev_os }}"
+      config_file: "/root/netansible/napalmconfig/{{ inventory_hostname }}.full"
+      commit_changes: "{{ commit_action }}"
+      replace_config: True
+      diff_file: /root/netansible/napalmdiff/{{ inventory_hostname }}.full.diff

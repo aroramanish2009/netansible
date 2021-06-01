@@ -1,0 +1,8 @@
+- name: Network configuration management 
+  hosts: all
+  vars_files:
+    - logging.txt 
+
+  roles:
+    - { role: ./roles/rack_switch, when: inventory_hostname is search('^nxos') or inventory_hostname is search('^hl0') }
+    - { role: ./roles/edge_router, when: inventory_hostname is search('^xrv') }

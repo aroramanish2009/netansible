@@ -1,0 +1,7 @@
+---
+- name: Enable Configuration TAG:template
+  import_tasks: generate_config.yaml
+  tags: template
+- name: Full Configuration
+  import_tasks: full.yaml 
+  tags: full
