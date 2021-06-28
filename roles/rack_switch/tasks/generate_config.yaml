@@ -10,4 +10,4 @@
   - name: Template Configuration
     template: src={{item.src}} dest={{item.dest}}
     with_items:
-      - { src: '../templates/full.j2' , dest: '~/netansible/napalmconfig/{{ inventory_hostname }}.full' }
+      - { src: '../templates/full.j2' , dest: '../../../napalmconfig/{{ inventory_hostname }}.full' }
