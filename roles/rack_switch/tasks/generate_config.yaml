@@ -7,6 +7,9 @@
       password: "{{ ansible_password }}"
       dev_os: "{{ dev_os }}"
     register: device_fact
+  - name: Create target directory if not present
+    file: path="../../../napalmconfig" state=directory mode=0755
+
   - name: Template Configuration
     template: src={{item.src}} dest={{item.dest}}
     with_items:
