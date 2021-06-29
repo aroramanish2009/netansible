@@ -5,7 +5,7 @@
       username: "{{ ansible_user }}"
       password: "{{ ansible_password }}"
       dev_os: "{{ dev_os }}"
-      config_file: "../../../napalmconfig/{{ inventory_hostname }}.full"
+      config_file: "~/workspace/docker-test/netansible/napalmconfig/{{ inventory_hostname }}.full"
       commit_changes: "{{ commit_action }}"
       replace_config: True
-      diff_file: "../../../napalmdiff/{{ inventory_hostname }}.full.diff"
+      diff_file: "~/workspace/docker-test/netansible/napalmdiff/{{ inventory_hostname }}.full.diff"
