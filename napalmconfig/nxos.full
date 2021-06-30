@@ -3,7 +3,7 @@
 !Time: Fri Xxx xx xx:xx:xx xxxx
 
 version 7.0(3)I7(9) Bios:version
-hostname myn9ktor
+hostname myn9ktor-1
 class-map type network-qos c-nq1
   description Default class on qos-group 1
 match qos-group 1
@@ -66,7 +66,7 @@ policy-map type network-qos default-8q-nq-policy
     mtu 1500
   class type network-qos c-8q-nq-default
     mtu 1500
-vdc myn9ktor id 1
+vdc myn9ktor-1 id 1
   limit-resource vlan minimum 16 maximum 4094
   limit-resource vrf minimum 2 maximum 4096
   limit-resource port-channel minimum 0 maximum 511

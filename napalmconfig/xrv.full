@@ -1,4 +1,4 @@
-hostname xrv
+hostname xrv-1
 banner motd 'ACCESS RESTRICTED TO AUTHORIZED PERSONNEL ONLY. UNAUTHORIZED ACCESS WILL BE PROSECUTED TO THE FULLEST EXTENT OF THE LAW'
 banner login '############################### Under Configuration Management System ###############################################'
 logging console warning

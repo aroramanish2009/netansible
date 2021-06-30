@@ -2,10 +2,10 @@
 ansible_connection=ansible.netcommon.network_cli
 
 [ar:vars]
-ansible_python_interpreter="/root/pyats/bin/python"
+#ansible_python_interpreter="/root/pyats/bin/python"
 
 [tor:vars]
-ansible_python_interpreter="/root/pyats/bin/python"
+#ansible_python_interpreter="/root/pyats/bin/python"
 
 [ar_iosxr:vars]
 ansible_network_os=iosxr
