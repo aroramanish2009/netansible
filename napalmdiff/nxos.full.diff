@@ -1,2 +1,4 @@
-hostname myn9ktor-1
-vdc myn9ktor-1 id 1
+no interface port-channel300
+no spanning-tree vlan 1-3967 priority 40960
+no vlan 102
+no vlan 101
