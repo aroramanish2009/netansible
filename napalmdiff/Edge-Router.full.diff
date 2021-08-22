@@ -1,0 +1,10 @@
++  interface GigabitEthernet0/0/0/2
++   description Available
++   shutdown
++   load-interval 30
++  !
+-  interface preconfigure GigabitEthernet0/0/0/3
+-   description Available
+-   shutdown
+-   load-interval 30
+-  !

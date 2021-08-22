@@ -1,0 +1,8 @@
+---
+  mgmt_address: '192.168.250.10'
+  mgmt_address_mask: '255.255.255.0'
+  interfaces:
+    Loopback0: { intf_des: 'loopback interface for routing', intf_ip: '192.168.20.1 255.255.255.255', intf_ipv6: none, intf_mtu: none , ipv4_acl: none, ipv6_acl: none }
+    GigabitEthernet0/0/0/0: { intf_des: 'Available', intf_ip: none, intf_ipv6: none, intf_mtu: none , ipv4_acl: none, ipv6_acl: none, admin_status: down }
+    GigabitEthernet0/0/0/1: { intf_des: 'Available', intf_ip: none, intf_ipv6: none, intf_mtu: none , ipv4_acl: none, ipv6_acl: none, admin_status: down }
+    GigabitEthernet0/0/0/2: { intf_des: 'Available', intf_ip: none, intf_ipv6: none, intf_mtu: none , ipv4_acl: none, ipv6_acl: none, admin_status: down }

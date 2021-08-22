@@ -1,38 +1,69 @@
-hostname {{ host_name }}
+hostname {{ inventory_hostname }}
 banner motd 'ACCESS RESTRICTED TO AUTHORIZED PERSONNEL ONLY. UNAUTHORIZED ACCESS WILL BE PROSECUTED TO THE FULLEST EXTENT OF THE LAW'
 banner login '############################### Under Configuration Management System ###############################################'
 logging console warning
 logging buffered 5000000
+{% if log_server is defined %}
+{% for log_serv in log_server %}
+logging {{ log_serv }} vrf {{ log_vrf }} severity info
+{% endfor %}
+{% endif %}
+{% if dns_domain_name is defined %}
+domain name {{ dns_domain_name }}
+{% endif %}
+{% if dns_server is defined %}
+{% for dns_serv in dns_server %}
+domain vrf {{ dns_vrf }} name-server {{ dns_serv }}
+{% endfor %}
+{% endif %}
 username ansible
  group netadmin
  group root-system
  secret 5 $1$gkxn$9Czgn8mwrrvYnAhjPao7f1
 !
-cdp
-interface Loopback0
- ipv4 address 2.2.2.2 255.255.255.255
+vrf {{ mgmt_vrf }}
+!
+{% for intf, intf_attr in interfaces.items()|sort %}
+interface {{ intf }}
+  description {{ intf_attr.intf_des }}
+{% if intf_attr.intf_dot1q is defined %}
+  encapsulation dot1q {{ intf_attr.intf_dot1q }}
+{% endif %}
+{% if intf_attr.intf_ip != 'none' %}
+  ipv4 address {{ intf_attr.intf_ip }}
+{% endif %}
+{% if intf_attr.intf_ipv6 != 'none' %}
+  ipv6 address {{ intf_attr.intf_ipv6 }}
+{% endif %}
+{% if intf_attr.intf_mtu != 'none' %}
+  mtu {{ intf_attr.intf_mtu }}
+{% endif %}
+{% if intf_attr.monitor_session is defined and intf_attr.monitor_session != 'none' %}
+  monitor-session {{ intf_attr.monitor_session }} ethernet port-level
+{% endif %}
+{% if intf_attr.ipv4_acl != 'none' %}
+  ipv4 access-group {{ intf_attr.ipv4_acl }} ingress
+{% endif %}
+{% if intf_attr.ipv6_acl != 'none' %}
+  ipv6 access-group {{ intf_attr.ipv6_acl }} ingress
+{% endif %}
+{% if 'Loopback' not in intf %}
+  load-interval 30
+{% endif %}
+{% if intf_attr.admin_status is defined and intf_attr.admin_status == 'down' %}
+  shutdown
+{% endif %}
+!
+{% endfor %}
 !
 interface MgmtEth0/0/CPU0/0
- description {{ mgmt_description }}
- ipv4 address 192.168.250.10 255.255.255.0
+ vrf {{ mgmt_vrf }}
+{% if mgmt_address_mask is defined %}
+ ipv4 address {{ mgmt_address }} {{ mgmt_address_mask }}
+{% else %}
+ ipv4 address {{ mgmt_address }} 255.255.255.0
+{% endif %}
 !
-interface GigabitEthernet0/0/0/0
- cdp
- ipv4 address 10.10.10.2 255.255.255.252
-!
-interface GigabitEthernet0/0/0/1
- shutdown
-!
-interface GigabitEthernet0/0/0/2
- shutdown
-!
-router ospf 100
- router-id 2.2.2.2
- auto-cost reference-bandwidth 40000
- area 0
-  loopback stub-network enable
-  interface Loopback0
-  interface GigabitEthernet0/0/0/0
  !
 xml agent tty
  iteration off
@@ -42,7 +73,7 @@ netconf-yang agent
  ssh
 !
 ssh server v2
-ssh server vrf default
-ssh server netconf vrf default
+ssh server vrf {{ mgmt_vrf }}
+ssh server netconf vrf {{ mgmt_vrf }}
 ssh server session-limit 10
 end
