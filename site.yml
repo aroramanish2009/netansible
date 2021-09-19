@@ -4,5 +4,6 @@
     - logging.txt 
 
   roles:
-    - { role: ./roles/rack_switch, when: inventory_hostname is search('^nxos') or inventory_hostname is search('^hl0') }
+    - { role: ./roles/spine_switch, when: inventory_hostname is search('^SPINE') or inventory_hostname is search('^ss0') }
+    - { role: ./roles/hostleaf_switch, when: inventory_hostname is search('^HOSTLEAF') or inventory_hostname is search('^hl0') }
     - { role: ./roles/edge_router, when: inventory_hostname is search('^Edge') }

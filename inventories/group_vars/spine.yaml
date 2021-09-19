@@ -1,0 +1,22 @@
+---
+  #Features
+  var_feature: ['nxapi', 'scp-server', 'tacacs+', 'ospf', 'ospfv3', 'bgp', 'pim', 'lldp']
+
+  #Username
+  auto_username: 'ansible'
+  search_domain: 'techmediaexperts.com'
+  
+  #Mgmt
+  mgmt_description: 'Management Interface for Spine Switches'
+  mgmt_vrf: 'management'
+
+  #VRFs
+  vrfs:
+    management:
+      description: 'none'
+      vrf_routes:
+        - 'ip route 0.0.0.0/0 192.168.250.1'
+    internet:
+      description: 'Internet VRF'
+      vrf_routes: 'none'
+       
