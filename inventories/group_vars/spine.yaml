@@ -1,6 +1,7 @@
 ---
   #Features
   var_feature: ['nxapi', 'scp-server', 'tacacs+', 'ospf', 'ospfv3', 'bgp', 'pim', 'lldp']
+  enable_evpn: 'True'
 
   #Username
   auto_username: 'ansible'
@@ -19,4 +20,6 @@
     internet:
       description: 'Internet VRF'
       vrf_routes: 'none'
-       
+  #PIM 
+  pim_rp_add: '10.10.0.128'
+  anycast_rps: ['10.10.0.1']

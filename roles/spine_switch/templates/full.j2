@@ -81,6 +81,9 @@ feature {{ feature }}
 !#feature ssh
 !#ssh key rsa 1024
 cfs eth distribute
+{% if enable_evpn is sameas true %}
+nv overlay evpn
+{% endif %}
 
 role name priv-15
   description This is a system defined privilege role.
@@ -277,6 +280,15 @@ aaa authentication login ascii-authentication
 tacacs-server directed-request
 {% endif %}
 
+{% if pim_rp_add is defined %}
+ip pim rp-address {{ pim_rp_add }} group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+{% if anycast_rps is defined %}
+{% for anycast_rp in anycast_rps %}
+ip pim anycast-rp {{ pim_rp_add }} {{ anycast_rp }}
+{% endfor %}
+{% endif %}
+{% endif %}
 vlan 1
 
 {% if vrfs is defined %}
@@ -297,9 +309,50 @@ nxapi https port 443
 no nxapi ssl ciphers weak
 nxapi ssl protocols TLSv1.1 TLSv1.2
 
-
+{% if interfaces is defined %}
+{% for type, value in interfaces.items() %}
+{% if type == "physical_l3" %}
+{% for item in value %}
+interface {{ item.name }}
+  description {{ item.description }}
+  no switchport
+{% if item.mtu is defined and item.mtu != 'none' %}
+  mtu {{ item.mtu }}
+{% endif %}
+{% if item.vrf is defined and item.vrf != 'none' %}
+  vrf member {{ item.vrf }}
+{% endif %}
+  ip address {{ item.ip }}
+  ipv6 address {{ item.ipv6 }}
+{% if ospf is defined %}
+{% for key1, value1 in ospf.items() %}
+{% if key1 == 'interfaces' %}
+{% for val in value1 %}
+{% if item.name == val.name %}
+{% if val.net_type is defined and val.net_type != 'none' %}
+  ip ospf network {{ val.net_type }}
+{% endif %}
+{% if val.passive is defined and val.passive is sameas false %}
+  no ip ospf passive-interface
+{% endif %}
+  ip router ospf 1 area {{ val.area }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if item.pim is defined and item.pim is sameas True %}
+  ip pim sparse-mode
+{% endif %}
+{% if item.state is defined and item.state == 'up' %}
+  no shutdown
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
 {% for i in range(128) %}
-{% if i >= 1 %}
+{% if i >= 3 %}
 interface Ethernet1/{{ i }}
   !#switchport
   switchport mode access
@@ -317,6 +370,13 @@ cli alias name wr copy run start
 line console
 line vty
 boot nxos bootflash:/nxos.7.0.3.I7.9.bin
+{% if ospf is defined %}
+router ospf {{ ospf.process }}
+  router-id {{ ospf.router_id }}
+{% if ospf.passive_interface is defined and ospf.passive_interface is sameas true %}
+  passive-interface default
+{% endif %}
+{% endif %}
 
 xml server timeout 1200
 

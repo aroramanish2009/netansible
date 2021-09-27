@@ -220,6 +220,9 @@ callhome
   !#periodic-inventory notification interval 7
   !#periodic-inventory notification timeofday 08:00
 
+ip pim rp-address 10.10.0.128 group-list 224.0.0.0/4
+ip pim ssm range 232.0.0.0/8
+ip pim anycast-rp 10.10.0.128 10.10.0.1
 vlan 1
 
 vrf context management
@@ -231,17 +234,26 @@ nxapi https port 443
 no nxapi ssl ciphers weak
 nxapi ssl protocols TLSv1.1 TLSv1.2
 
-
 interface Ethernet1/1
-  !#switchport
-  switchport mode access
-  !#switchport trunk allowed vlan 1-4094
-  !#no shutdown
+  description L3-to-HOSTLEAF1
+  no switchport
+  ip address 10.10.1.2/31
+  ipv6 address 2001:db8:5100:1::2/127
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 1 area 0.0.0.0
+  ip pim sparse-mode
+  no shutdown
 interface Ethernet1/2
-  !#switchport
-  switchport mode access
-  !#switchport trunk allowed vlan 1-4094
-  !#no shutdown
+  description L3-to-HOSTLEAF2
+  no switchport
+  ip address 10.10.1.4/31
+  ipv6 address 2001:db8:5100:1::4/127
+  ip ospf network point-to-point
+  no ip ospf passive-interface
+  ip router ospf 1 area 0.0.0.0
+  ip pim sparse-mode
+  no shutdown
 interface Ethernet1/3
   !#switchport
   switchport mode access
@@ -877,6 +889,9 @@ cli alias name wr copy run start
 line console
 line vty
 boot nxos bootflash:/nxos.7.0.3.I7.9.bin
+router ospf 1
+  router-id 10.10.0.1
+  passive-interface default
 
 xml server timeout 1200
 

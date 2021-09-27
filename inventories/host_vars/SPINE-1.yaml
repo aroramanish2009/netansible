@@ -1,3 +1,25 @@
 ---
   #Management IP
   mgmt_ip: '192.168.250.11/24'
+
+  #Physcial, Virtual, Loopback, NVE & Mgmt Interfaces
+  interfaces:
+    physical_l3:
+      - {'name': 'Ethernet1/1', 'description': 'L3-to-HOSTLEAF1', 'ip': '10.10.1.2/31', 'ipv6': '2001:db8:5100:1::2/127', 'pim': true, 'state': 'up'}
+      - {'name': 'Ethernet1/2', 'description': 'L3-to-HOSTLEAF2', 'ip': '10.10.1.4/31', 'ipv6': '2001:db8:5100:1::4/127', 'pim': true, 'state': 'up'}
+    loopback:
+      - {'name': 'loopback0', 'description': 'Loopback Interface', 'ip': '10.10.0.1/32', 'ipv6': '2001:db8:5100::1/128', 'pim': true, 'state': 'up'}
+      - {'name': 'loopback100', 'description': 'Loopback Interface', 'ip': '10.10.0.128/32', 'ipv6': '2001:db8:5100::128/128', 'pim': true, 'state': 'up'}
+    management:
+      - {'name': 'mgmt0', 'description': 'Management Interface for Spine Switch', 'vrf': 'management', 'ip': '192.168.250.11/24', 'ipv6': none, 'state': 'up'}
+
+  #OSPF Routing
+  ospf:
+    process: '1'
+    router_id: '10.10.0.1'
+    passive_interface: true
+    interfaces:
+      - {'name': 'Ethernet1/1', 'area': '0.0.0.0', 'net_type': 'point-to-point', 'passive': false }
+      - {'name': 'Ethernet1/2', 'area': '0.0.0.0', 'net_type': 'point-to-point', 'passive': false }
+      - {'name': 'loopback0', 'area': '0.0.0.0', 'net_type': 'point-to-point', 'passive': true }
+      - {'name': 'loopback100', 'area': '0.0.0.0', 'net_type': 'point-to-point', 'passive': true }
