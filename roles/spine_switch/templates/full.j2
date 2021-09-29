@@ -335,7 +335,7 @@ interface {{ item.name }}
 {% if val.passive is defined and val.passive is sameas false %}
   no ip ospf passive-interface
 {% endif %}
-  ip router ospf 1 area {{ val.area }}
+  ip router ospf {{ ospf.process }} area {{ val.area }}
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -351,21 +351,50 @@ interface {{ item.name }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% for i in range(128) %}
-{% if i >= 3 %}
-interface Ethernet1/{{ i }}
-  !#switchport
-  switchport mode access
-  !#switchport trunk allowed vlan 1-4094
-  !#no shutdown
+
+{% if interfaces is defined %}
+{% for type, value in interfaces.items() %}
+{% if type == "management" %}
+{% for item in value %}
+interface {{ item.name }}
+{% if item.state is defined and item.state == 'down' %}
+  shutdown force
+{% endif %}
+  description {{ item.description }}
+  vrf member {{ item.vrf }}
+  ip address {{ item.ip }}
+{% endfor %}
+{% elif type == "loopback" %}
+{% for item in value %}
+
+interface {{ item.name }}
+  description {{ item.description }}
+{% if item.vrf is defined and item.vrf is not none %}
+  vrf member {{ item.vrf }}
+{% endif %}
+  ip address {{ item.ip }}
+{% if item.ipv6 is defined and item.ipv6 is not none %}
+  ipv6 address {{ item.ipv6 }}
+{% endif %}
+{% if item.pim is defined and item.pim is sameas True %}
+  ip pim sparse-mode
+{% endif %}
+{% if ospf is defined %}
+{% for key1, value1 in ospf.items() %}
+{% if key1 == 'interfaces' %}
+{% for val in value1 %}
+{% if item.name == val.name %}
+  ip router ospf {{ ospf.process }} area {{ val.area }}
 {% endif %}
 {% endfor %}
-
-
-interface mgmt0
-  description {{ mgmt_description }}
-  vrf member {{ mgmt_vrf }}
-  ip address {{ mgmt_ip }}
+{% endif %}
+{% endfor %}
+{% endif %}
+  !#no shutdown
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
 cli alias name wr copy run start
 line console
 line vty
